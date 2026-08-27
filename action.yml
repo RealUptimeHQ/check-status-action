@@ -1,0 +1,63 @@
+name: "realuptime: check monitor status"
+description: >-
+  Checks one or more realuptime monitors' current status via the public
+  REST API and fails the workflow if any is down, degraded, or errors.
+  Requires a Growth or Scale plan API key (see docs/api.md).
+author: "realuptime"
+
+branding:
+  icon: "activity"
+  color: "green"
+
+inputs:
+  api-key:
+    description: >-
+      A realuptime API key (Growth or Scale plan, "read" scope is
+      sufficient). Pass via a repository or organization secret, never a
+      literal value in the workflow file.
+    required: true
+  check-ids:
+    description: >-
+      One or more monitor ids to check, comma- or newline-separated. Find a
+      monitor's id from the dashboard or the `GET /checks` endpoint.
+    required: true
+  fail-on:
+    description: >-
+      Comma-separated list of statuses that should fail the workflow step.
+      Valid values: operational, degraded, down, stale, unknown. Defaults to
+      "down,degraded" -- "stale" and "unknown" mean missing/old data, not a
+      confirmed outage, so they don't fail the step by default.
+    required: false
+    default: "down,degraded"
+  base-url:
+    description: >-
+      Override the REST API base URL. Only needed for testing against a
+      non-production realuptime instance.
+    required: false
+    default: "https://realuptime.io/api/v1"
+
+outputs:
+  all_operational:
+    description: "\"true\" if every checked monitor's status was outside the fail-on list, \"false\" otherwise."
+    value: ${{ steps.run.outputs.all_operational }}
+  failure_count:
+    description: "Number of monitors that errored or matched a fail-on status."
+    value: ${{ steps.run.outputs.failure_count }}
+  results:
+    description: >-
+      JSON array of every checked monitor's result: {checkId, ok, name?,
+      url?, status?, error?}.
+    value: ${{ steps.run.outputs.results }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run status check
+      id: run
+      shell: bash
+      env:
+        INPUT_API_KEY: ${{ inputs.api-key }}
+        INPUT_CHECK_IDS: ${{ inputs.check-ids }}
+        INPUT_FAIL_ON: ${{ inputs.fail-on }}
+        INPUT_BASE_URL: ${{ inputs.base-url }}
+      run: node --no-warnings "${{ github.action_path }}/check-status.mjs"
