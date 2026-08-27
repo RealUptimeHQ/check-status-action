@@ -9,10 +9,10 @@ no extra service, no polling infrastructure to run yourself.
 Requires a Growth or Scale plan API key. The REST API and MCP server are paid
 features; see [realuptime.io/pricing](https://realuptime.io/pricing).
 
-This repository is a publish mirror of the action's source, which lives in
-[the realuptime monorepo](https://github.com/RealUptimeHQ/realuptime) at
-`.github/actions/check-status`. Open issues and pull requests against the
-monorepo, not here; this repo's history is overwritten on every mirror run.
+This repository is a read-only publish surface and its history is rewritten
+on release. For questions or problems, use the docs at
+[realuptime.io/docs/github-action](https://realuptime.io/docs/github-action)
+or contact support@realuptime.io; pull requests here cannot be merged.
 
 ## Usage
 
