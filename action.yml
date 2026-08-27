@@ -1,13 +1,12 @@
 name: "realuptime: check monitor status"
 description: >-
-  Checks one or more realuptime monitors' current status via the public
-  REST API and fails the workflow if any is down, degraded, or errors.
-  Requires a Growth or Scale plan API key (see docs/api.md).
+  Check your realuptime monitors via the REST API and fail the workflow
+  when any is down or degraded.
 author: "realuptime"
 
 branding:
   icon: "activity"
-  color: "green"
+  color: "purple"
 
 inputs:
   api-key:
